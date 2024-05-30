@@ -10,6 +10,17 @@ import org.opencv.core.Mat;
 /**
  * Class meant to handle commands from the Ground Data System and execute them in Astrobee.
  */
+public class YourService extends KiboRpcService {
+    static void distancecalc(Point vec1, Point vec2) {
+        coordY = vec2.y - vec1.y
+        coordX = vec2.x - vec1.x
+        return Math.sqrt((coordY) * (coordY) + (coordX) * (coordX));
+    }
+}
+// figure out z
+
+
+distancecalc(Point(1,1,1), Point(1,1,1))
 
 public class YourService extends KiboRpcService {
     @Override
@@ -18,6 +29,7 @@ public class YourService extends KiboRpcService {
         api.startMission();
 
         // Move to a point.
+        
         Point point = new Point(10.9d, -9.92284d, 5.195d);
         Quaternion quaternion = new Quaternion(0f, 0f, -0.707f, 0.707f);
         api.moveTo(point, quaternion, false);
