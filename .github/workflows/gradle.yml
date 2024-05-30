@@ -26,20 +26,27 @@ jobs:
       uses: actions/setup-java@v4
       with:
         java-version: '17'
-        distribution: 'temurin'  
+        distribution: 'temurin'
 
     - name: Setup Android SDK Tools
       uses: android-actions/setup-android@v3.2.1
       with:
-        java-version: '17'
-        distribution: 'temurin'
         packages: |
           platforms;android-25 platforms;android-26 platforms;android-28 build-tools;25.0.3 build-tools;26.0.2 build-tools;28.0.3
-    - name: Set up JDK 8
-      uses: actions/setup-java@v4
+
+    - name: Cache Android SDKs and Tools
+      id: cache-android
+      uses: actions/cache@v3
+      env:
+        cache-name: cache-android-sdks-and-tools
       with:
-        java-version: '8'
-        distribution: 'temurin'  
+        # android cache files are stored in `~/.android` on Linux/macOS
+        path: ~/.android
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
 
     # - name: Setup Android Tools
     #   run: |
@@ -57,16 +64,13 @@ jobs:
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
     # If your project does not have the Gradle Wrapper configured, you can use the following configuration to run Gradle with a specified version.
     #
-    # - name: Setup Gradle
-    #   uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
-    #   with:
-    #     gradle-version: '6.3.1'
+    - name: Setup Gradle 4.4.1
+      uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
+      with:
+        gradle-version: '4.4.1'
     
-    # - name: Build with Gradle 6.3.1
-    #   run: gradle build
-
-    - name: Build with Gradle Wrapper (in repo)
-      run: ./gradlew assembleDebug
+    - name: Build with Gradle 4.4.1
+      run: ./gradlew build
 
   dependency-submission:
 
