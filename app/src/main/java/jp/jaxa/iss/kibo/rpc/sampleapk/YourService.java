@@ -14,10 +14,10 @@ public class YourService extends KiboRpcService {
     static void distancecalc(Point vec1, Point vec2) {
         coordY = vec2.y - vec1.y
         coordX = vec2.x - vec1.x
-        return Math.sqrt((coordY) * (coordY) + (coordX) * (coordX));
+        coordZ = vec2.z - vec1.z
+        return Math.sqrt(((coordY) * (coordY) + (coordX) * (coordX)) + ((coordZ) * (coordZ)));
     }
 }
-// figure out z
 
 
 distancecalc(Point(1,1,1), Point(1,1,1))
