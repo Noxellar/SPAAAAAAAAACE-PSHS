@@ -28,8 +28,8 @@ jobs:
         java-version: '8'
         distribution: 'temurin'
 
-    - name: Setup Android SDK
-      uses: Xmaxer/setup-android@v1.0.3
+    - name: Setup Android Tools
+      uses: maxim-lobanov/setup-android-tools@v1
 
     # Configure Gradle for optimal use in GitHub Actions, including caching of downloaded dependencies.
     # See: https://github.com/gradle/actions/blob/main/setup-gradle/README.md
