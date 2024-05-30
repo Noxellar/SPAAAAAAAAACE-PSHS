@@ -42,7 +42,7 @@ jobs:
       with:
         # android cache files are stored in `~/.android` on Linux/macOS
         path: ~/.android
-        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/sdkmanager.properties') }}
         restore-keys: |
           ${{ runner.os }}-build-${{ env.cache-name }}-
           ${{ runner.os }}-build-
@@ -70,7 +70,7 @@ jobs:
         gradle-version: '4.4.1'
     
     - name: Build with Gradle 4.4.1
-      run: ./gradlew build
+      run: ./gradlew assembleDebug
 
   dependency-submission:
 
