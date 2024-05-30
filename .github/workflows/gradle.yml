@@ -32,7 +32,7 @@ jobs:
       uses: android-actions/setup-android@v3.2.1
       with:
         packages: |
-          platforms;android-25 platforms;android-26 platforms;android-28 build-tools;25.0.3 build-tools;26.0.2 build-tools;28.0.3
+          platform-tools platforms;android-25 platforms;android-26 platforms;android-28 build-tools;25.0.3 build-tools;26.0.2 build-tools;28.0.3
 
     - name: Cache Android SDKs and Tools
       id: cache-android
