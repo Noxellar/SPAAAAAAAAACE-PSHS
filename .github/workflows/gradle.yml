@@ -28,12 +28,6 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Setup Android SDK Tools
-      uses: android-actions/setup-android@v3.2.1
-      with:
-        packages: |
-          platform-tools platforms;android-25 platforms;android-26 platforms;android-28 build-tools;25.0.3 build-tools;26.0.2 build-tools;28.0.3
-
     - name: Cache Android SDKs and Tools
       id: cache-android
       uses: actions/cache@v3
@@ -47,6 +41,12 @@ jobs:
           ${{ runner.os }}-build-${{ env.cache-name }}-
           ${{ runner.os }}-build-
           ${{ runner.os }}-
+
+    - name: Setup Android SDK Tools
+      uses: android-actions/setup-android@v3.2.1
+      with:
+        packages: |
+          platform-tools platforms;android-25 platforms;android-26 platforms;android-28 build-tools;25.0.3 build-tools;26.0.2 build-tools;28.0.3
 
     # - name: Setup Android Tools
     #   run: |
