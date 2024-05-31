@@ -84,13 +84,9 @@ jobs:
     - name: List 1
       run: ls
     - name: List 4
-      run: ls /home/runner
-    - name: List 5
-      run: ls build  ls /home/runner/work
-    - name: List 6
-      run: ls build  ls /home/runner/work/SPAAAAAAAAACE-PSHS
-    - name: List 7
-      run: ls build  ls /home/runner/work/SPAAAAAAAAACE-PSHS/SPAAAAAAAAACE-PSHS
+      run: ls /home/runners
+    - name: List 8
+      run: ls /home/work
 
     - name: Upload all workflow run artifacts
       uses: actions/upload-artifact@v4
