@@ -80,7 +80,13 @@ jobs:
       run: sudo rm -rf /usr/local/lib/android/sdk/ndk
 
     - name: Build with Gradle 4.4.1
-      run: ./gradlew assembleDebug --info
+      run: ./gradlew assembleDebug
+
+    - name: List build files?
+      run: |
+        ls /home/runner
+        ls /home/runner/work/SPAAAAAAAAACE-PSHS/SPAAAAAAAAACE-PSHS
+        ls /home/runner/work/SPAAAAAAAAACE-PSHS/SPAAAAAAAAACE-PSHS/build
 
     - name: Download all workflow run artifacts
       uses: actions/download-artifact@v4
