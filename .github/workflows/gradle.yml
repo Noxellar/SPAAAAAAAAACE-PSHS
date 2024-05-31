@@ -82,10 +82,26 @@ jobs:
     - name: Build with Gradle 4.4.1
       run: ./gradlew assembleDebug
 
+    - name: List 1
+      run: ls
+    - name: List 2
+      run: ls build
+    - name: List 3
+      run: ls build/libs
+    - name: List 4
+      run: ls /home/runner
+    - name: List 5
+      run: ls build  ls /home/runner/work
+    - name: List 6
+      run: ls build  ls /home/runner/work/SPAAAAAAAAACE-PSHS
+    - name: List 7
+      run: ls build  ls /home/runner/work/SPAAAAAAAAACE-PSHS/SPAAAAAAAAACE-PSHS
+
     - name: Upload all workflow run artifacts
       uses: actions/upload-artifact@v4
       with:
         name: Build
+        path: build/libs
 
   dependency-submission:
 
