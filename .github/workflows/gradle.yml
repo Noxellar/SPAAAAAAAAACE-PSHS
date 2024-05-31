@@ -82,6 +82,10 @@ jobs:
     - name: Build with Gradle 4.4.1
       run: ./gradlew assembleDebug --info
 
+    - name: Download all workflow run artifacts
+      uses: actions/download-artifact@v4
+
+
   dependency-submission:
 
     runs-on: ubuntu-latest
