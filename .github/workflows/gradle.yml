@@ -18,7 +18,7 @@ jobs:
 
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
 
     steps:
     - uses: actions/checkout@v4
@@ -75,6 +75,9 @@ jobs:
       with:
         java-version: '8'
         distribution: 'temurin'
+
+    - name: Delete ndk
+      run: sudo rm -rf /usr/local/lib/android/sdk/ndk
 
     - name: Build with Gradle 4.4.1
       run: ./gradlew assembleDebug --info
