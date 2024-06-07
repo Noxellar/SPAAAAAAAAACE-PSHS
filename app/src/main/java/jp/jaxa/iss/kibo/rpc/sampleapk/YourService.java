@@ -6,6 +6,7 @@ import gov.nasa.arc.astrobee.types.Point;
 import gov.nasa.arc.astrobee.types.Quaternion;
 
 import org.opencv.core.Mat;
+import org.opencv.aruco.Aruco;
 
 /**
  * Class meant to handle commands from the Ground Data System and execute them
@@ -27,7 +28,11 @@ public class YourService extends KiboRpcService {
         api.moveTo(point, quaternion, false);
 
         // Get a camera image.
-        Mat image = api.getMatNavCam();
+        Mat navCamImage = api.getMatNavCam();
+        Mat dockCamImage = api.getMatDockCam();
+
+        api.saveMatImage(navCamImage, "navcam");
+        api.saveMatImage(dockCamImage, "dockcam");
 
         /* *********************************************************************** */
         /* Write your code to recognize type and number of items in the each area! */
@@ -78,9 +83,6 @@ public class YourService extends KiboRpcService {
     }
 
     // You can add your method.
-    private String yourMethod() {
-        return "your method";
-    }
 
     private double calculateDistance(Point vec1, Point vec2) {
         double coordY = vec2.getX() - vec1.getX();
