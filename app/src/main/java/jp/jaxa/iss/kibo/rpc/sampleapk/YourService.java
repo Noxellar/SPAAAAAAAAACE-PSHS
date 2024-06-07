@@ -41,7 +41,7 @@ public class YourService extends KiboRpcService {
 
         Dictionary dictionary = Aruco.getPredefinedDictionary(Aruco.DICT_5X5_50);
         List<Mat> matList = new Vector<Mat>();
-        Mat something;
+        Mat something = new Mat();
         Aruco.detectMarkers(navCamImage, dictionary, matList, something);
 
         /* *********************************************************************** */
