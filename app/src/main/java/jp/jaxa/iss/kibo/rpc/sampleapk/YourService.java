@@ -6,7 +6,12 @@ import gov.nasa.arc.astrobee.types.Point;
 import gov.nasa.arc.astrobee.types.Quaternion;
 
 import org.opencv.core.Mat;
+
 import org.opencv.aruco.Aruco;
+import org.opencv.aruco.Dictionary;
+
+import java.util.List;
+import java.util.Vector;
 
 /**
  * Class meant to handle commands from the Ground Data System and execute them
@@ -33,6 +38,11 @@ public class YourService extends KiboRpcService {
 
         api.saveMatImage(navCamImage, "navcam");
         api.saveMatImage(dockCamImage, "dockcam");
+
+        Dictionary dictionary = Aruco.getPredefinedDictionary(Aruco.DICT_5X5_50);
+        List<Mat> matList = new Vector<Mat>();
+        Mat something;
+        Aruco.detectMarkers(navCamImage, dictionary, matList, something);
 
         /* *********************************************************************** */
         /* Write your code to recognize type and number of items in the each area! */
