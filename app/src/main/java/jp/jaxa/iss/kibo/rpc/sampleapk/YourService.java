@@ -32,7 +32,7 @@ public class YourService extends KiboRpcService {
         Quaternion quaternion = new Quaternion(0f, 0f, -0.707f, 0.707f);
         api.moveTo(point, quaternion, true);
 
-        api.flashlightControlFront(0.02f)
+        api.flashlightControlFront(0.02f);
 
         // Get a camera image.
         Mat navCamImage = api.getMatNavCam();
