@@ -30,7 +30,9 @@ public class YourService extends KiboRpcService {
         // Move to a point.
         Point point = new Point(10.9d, -9.92284d, 5.195d);
         Quaternion quaternion = new Quaternion(0f, 0f, -0.707f, 0.707f);
-        api.moveTo(point, quaternion, false);
+        api.moveTo(point, quaternion, true);
+
+        api.flashlightControlFront(0.02f)
 
         // Get a camera image.
         Mat navCamImage = api.getMatNavCam();
@@ -41,29 +43,33 @@ public class YourService extends KiboRpcService {
 
         Dictionary dictionary = Aruco.getPredefinedDictionary(Aruco.DICT_5X5_50);
         List<Mat> matList = new Vector<Mat>();
-        Mat something = new Mat();
-        Aruco.detectMarkers(navCamImage, dictionary, matList, something);
+        Mat mat = new Mat();
+        Aruco.detectMarkers(navCamImage, dictionary, matList, mat);
+
+        System.out.println(dictionary);
+        System.out.println(matList);
+        System.out.println(mat);
 
         /* *********************************************************************** */
         /* Write your code to recognize type and number of items in the each area! */
         /* *********************************************************************** */
 
         // When you recognize items, let’s set the type and number.
-        api.setAreaInfo(1, "item_name", 1);
+        // TODO: RENABLE THIS LINE!!! api.setAreaInfo(1, "item_name", 1);
 
         /* **************************************************** */
         /* Let's move to the each area and recognize the items. */
         /* **************************************************** */
 
         // When you move to the front of the astronaut, report the rounding completion.
-        api.reportRoundingCompletion();
+        // TODO: RENABLE THIS LINE!!! api.reportRoundingCompletion();
 
         /* ********************************************************** */
         /* Write your code to recognize which item the astronaut has. */
         /* ********************************************************** */
 
         // Let's notify the astronaut when you recognize it.
-        api.notifyRecognitionItem();
+        // TODO: RENABLE THIS LINE!!! api.notifyRecognitionItem();
 
         /*
          * *****************************************************************************
