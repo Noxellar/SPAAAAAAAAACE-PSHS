@@ -6,10 +6,11 @@ import gov.nasa.arc.astrobee.types.Point;
 import gov.nasa.arc.astrobee.types.Quaternion;
 
 import org.opencv.core.Mat;
-
+import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.aruco.Aruco;
 import org.opencv.aruco.Dictionary;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -28,7 +29,7 @@ public class YourService extends KiboRpcService {
         System.out.println(root3);
 
         // Move to a point.
-        Point point = new Point(10.9d, -9.92284d, 5.195d);
+        Point point = new Point(11.1d, -10.2d, 5.195d);
         Quaternion quaternion = new Quaternion(0f, 0f, -0.707f, 0.707f);
         api.moveTo(point, quaternion, true);
 
@@ -41,14 +42,9 @@ public class YourService extends KiboRpcService {
         api.saveMatImage(navCamImage, "navcam");
         api.saveMatImage(dockCamImage, "dockcam");
 
-        Dictionary dictionary = Aruco.getPredefinedDictionary(Aruco.DICT_5X5_50);
-        List<Mat> matList = new Vector<Mat>();
-        Mat mat = new Mat();
-        Aruco.detectMarkers(navCamImage, dictionary, matList, mat);
-
-        System.out.println(dictionary);
-        System.out.println(matList);
-        System.out.println(mat);
+        for (int i = 0; i <= 5 - 1; i++) {
+            testArUcoMarkerType(navCamImage, i);
+        }
 
         /* *********************************************************************** */
         /* Write your code to recognize type and number of items in the each area! */
@@ -94,8 +90,8 @@ public class YourService extends KiboRpcService {
     }
 
     @Override
-    protected void runPlan3() {
-        // write your plan 3 here.
+
+    // write your plan 3 here.
     }
 
     // You can add your method.
@@ -106,5 +102,34 @@ public class YourService extends KiboRpcService {
         double coordZ = vec2.getZ() - vec1.getZ();
 
         return Math.sqrt((double) ((coordY * coordY) + (coordX * coordX) + (coordZ * coordZ)));
+    }
+
+    private void testArUcoMarkerType(Mat navCamImage, int round) {
+        Dictionary markerCorners;
+
+        if (round == 0) {
+            markerCorners = Aruco.getPredefinedDictionary(Aruco.DICT_5X5_50);
+        } else if (round == 1) {
+            markerCorners = Aruco.getPredefinedDictionary(Aruco.DICT_5X5_100);
+        } else if (round == 2) {
+            markerCorners = Aruco.getPredefinedDictionary(Aruco.DICT_5X5_250);
+        } else if (round == 3) {
+            markerCorners = Aruco.getPredefinedDictionary(Aruco.DICT_5X5_1000);
+        } else {
+            markerCorners = Aruco.getPredefinedDictionary(Aruco.DICT_5X5_50);
+            navCamImage = Imgcodecs.imread("artag.png");
+        }
+
+        List<Mat> markerIds = new ArrayList<Mat>();
+        Mat rejectedCandidates = new Mat();
+        Aruco.detectMarkers(navCamImage, markerCorners, markerIds, rejectedCandidates);
+
+        api.saveMatImage(rejectedCandidates, String.format("candidate%d", round));
+
+        System.out.printf("NAV IMAGE MARKER DETECTION: ROUND %d", round);
+
+        System.out.println(markerCorners);
+        System.out.println(markerIds);
+        System.out.println(rejectedCandidates.dump());
     }
 }
