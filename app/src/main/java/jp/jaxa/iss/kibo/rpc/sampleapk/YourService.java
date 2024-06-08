@@ -7,9 +7,14 @@ import gov.nasa.arc.astrobee.types.Quaternion;
 
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
+
+import android.graphics.BitmapFactory;
+
+import org.opencv.android.Utils;
 import org.opencv.aruco.Aruco;
 import org.opencv.aruco.Dictionary;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +33,7 @@ public class YourService extends KiboRpcService {
         System.out.println(root3);
 
         // Move to a point.
-        Point point = new Point(11.1d, -10.2d, 5.195d);
+        Point point = new Point(10.9d, -9.92284d, 5.195d);
         Quaternion quaternion = new Quaternion(0f, 0f, -0.707f, 0.707f);
         api.moveTo(point, quaternion, true);
 
@@ -41,7 +46,7 @@ public class YourService extends KiboRpcService {
         api.saveMatImage(navCamImage, "navcam");
         api.saveMatImage(dockCamImage, "dockcam");
 
-        for (int i = 0; i <= 5 - 1; i++) {
+        for (int i = 0; i <= 4 - 1; i++) {
             testArUcoMarkerType(navCamImage, i);
         }
 
@@ -116,7 +121,11 @@ public class YourService extends KiboRpcService {
             markerCorners = Aruco.getPredefinedDictionary(Aruco.DICT_5X5_1000);
         } else {
             markerCorners = Aruco.getPredefinedDictionary(Aruco.DICT_5X5_50);
-            navCamImage = Imgcodecs.imread("artag.png");
+
+            int resourceId = getResources().getIdentifier("artag", "raw", getPackageName());
+            InputStream stream = getResources().openRawResource(resourceId);
+
+            Utils.bitmapToMat(BitmapFactory.decodeStream(stream), navCamImage);
         }
 
         List<Mat> markerIds = new ArrayList<Mat>();
