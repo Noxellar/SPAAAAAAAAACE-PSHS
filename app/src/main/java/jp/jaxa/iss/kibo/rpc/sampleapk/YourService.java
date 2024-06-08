@@ -6,7 +6,6 @@ import gov.nasa.arc.astrobee.types.Point;
 import gov.nasa.arc.astrobee.types.Quaternion;
 
 import org.opencv.core.Mat;
-import org.opencv.imgcodecs.Imgcodecs;
 
 import android.graphics.BitmapFactory;
 
@@ -46,9 +45,17 @@ public class YourService extends KiboRpcService {
         api.saveMatImage(navCamImage, "navcam");
         api.saveMatImage(dockCamImage, "dockcam");
 
-        for (int i = 0; i <= 4 - 1; i++) {
-            testArUcoMarkerType(navCamImage, i);
-        }
+        testArUcoMarkerType(navCamImage);
+
+        // Perform test on known ArUco tage
+        Mat testImage = new Mat();
+
+        int resourceId = getResources().getIdentifier("artag", "drawable", getPackageName());
+        InputStream stream = getResources().openRawResource(resourceId);
+
+        Utils.bitmapToMat(BitmapFactory.decodeStream(stream), testImage);
+
+        testArUcoMarkerType(navCamImage);
 
         /* *********************************************************************** */
         /* Write your code to recognize type and number of items in the each area! */
@@ -108,33 +115,16 @@ public class YourService extends KiboRpcService {
         return Math.sqrt((double) ((coordY * coordY) + (coordX * coordX) + (coordZ * coordZ)));
     }
 
-    private void testArUcoMarkerType(Mat navCamImage, int round) {
-        Dictionary markerCorners;
+    private void testArUcoMarkerType(Mat navCamImage) {
+        System.out.println("NAV IMAGE MARKER DETECTION");
 
-        if (round == 0) {
-            markerCorners = Aruco.getPredefinedDictionary(Aruco.DICT_5X5_50);
-        } else if (round == 1) {
-            markerCorners = Aruco.getPredefinedDictionary(Aruco.DICT_5X5_100);
-        } else if (round == 2) {
-            markerCorners = Aruco.getPredefinedDictionary(Aruco.DICT_5X5_250);
-        } else if (round == 3) {
-            markerCorners = Aruco.getPredefinedDictionary(Aruco.DICT_5X5_1000);
-        } else {
-            markerCorners = Aruco.getPredefinedDictionary(Aruco.DICT_5X5_50);
-
-            int resourceId = getResources().getIdentifier("artag", "raw", getPackageName());
-            InputStream stream = getResources().openRawResource(resourceId);
-
-            Utils.bitmapToMat(BitmapFactory.decodeStream(stream), navCamImage);
-        }
+        Dictionary markerCorners = Aruco.getPredefinedDictionary(Aruco.DICT_5X5_250);
 
         List<Mat> markerIds = new ArrayList<Mat>();
         Mat rejectedCandidates = new Mat();
         Aruco.detectMarkers(navCamImage, markerCorners, markerIds, rejectedCandidates);
 
-        api.saveMatImage(rejectedCandidates, String.format("candidate%d", round));
-
-        System.out.printf("NAV IMAGE MARKER DETECTION: ROUND %d", round);
+        api.saveMatImage(rejectedCandidates, "candidateImage");
 
         System.out.println(markerCorners);
         System.out.println(markerIds);
