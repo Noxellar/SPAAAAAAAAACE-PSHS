@@ -12,7 +12,6 @@ import org.opencv.aruco.Dictionary;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * Class meant to handle commands from the Ground Data System and execute them
@@ -90,8 +89,8 @@ public class YourService extends KiboRpcService {
     }
 
     @Override
-
-    // write your plan 3 here.
+    protected void runPlan3() {
+        // write your plan 3 here.
     }
 
     // You can add your method.
