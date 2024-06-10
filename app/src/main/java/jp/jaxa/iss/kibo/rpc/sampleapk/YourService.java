@@ -5,15 +5,14 @@ import jp.jaxa.iss.kibo.rpc.api.KiboRpcService;
 import gov.nasa.arc.astrobee.types.Point;
 import gov.nasa.arc.astrobee.types.Quaternion;
 
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
-
-import android.graphics.BitmapFactory;
-
-import org.opencv.android.Utils;
+import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.aruco.Aruco;
 import org.opencv.aruco.DetectorParameters;
 import org.opencv.aruco.Dictionary;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,14 +48,21 @@ public class YourService extends KiboRpcService {
         detectArUcoMarkers(navCamImage, "navCamImage");
 
         // Perform test on known ArUco tage
-        Mat testImage = new Mat();
 
         int resourceId = getResources().getIdentifier("artag", "drawable", getPackageName());
         InputStream stream = getResources().openRawResource(resourceId);
+        byte[] bytes = new byte[0];
+        try {
+            bytes = stream.readAllBytes();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
-        Utils.bitmapToMat(BitmapFactory.decodeStream(stream), testImage);
+        Mat testImage = new Mat(1, bytes.length, CvType.CV_8UC1);
+        testImage.put(0, 0, bytes);
 
-        detectArUcoMarkers(testImage, "testImage");
+        detectArUcoMarkers(Imgcodecs.imdecode(testImage, Imgcodecs.IMREAD_UNCHANGED), "testImage");
 
         /* *********************************************************************** */
         /* Write your code to recognize type and number of items in the each area! */
