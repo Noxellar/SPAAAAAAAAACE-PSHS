@@ -146,14 +146,7 @@ public class YourService extends KiboRpcService {
         Mat outputImage = inputImage.clone();
         Aruco.drawDetectedMarkers(outputImage, markerCorners, markerIds);
 
-        api.saveMatImage(outputImage, imageNameBase + "Markers");
-
-        System.out.println("----- INDIVIDUAL MARKER IMAGES -----\n");
-        // NOTE: This may be trying to save a set of points and not an actual image
-        int imageCount = 0;
-        for (Mat imageMat : markerCorners) {
-            api.saveMatImage(imageMat, imageNameBase + Integer.toString(imageCount));
-        }
+        api.saveMatImage(outputImage, imageNameBase);
 
         System.out.println("---------- END OF FUNCTION ----------\n");
     }
