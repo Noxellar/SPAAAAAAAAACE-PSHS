@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory;
 
 import org.opencv.android.Utils;
 import org.opencv.aruco.Aruco;
+import org.opencv.aruco.DetectorParameters;
 import org.opencv.aruco.Dictionary;
 
 import java.io.InputStream;
@@ -45,7 +46,7 @@ public class YourService extends KiboRpcService {
         api.saveMatImage(navCamImage, "navcam");
         api.saveMatImage(dockCamImage, "dockcam");
 
-        testArUcoMarkerType(navCamImage);
+        detectArUcoMarkers(navCamImage, "navCamImage");
 
         // Perform test on known ArUco tage
         Mat testImage = new Mat();
@@ -55,7 +56,7 @@ public class YourService extends KiboRpcService {
 
         Utils.bitmapToMat(BitmapFactory.decodeStream(stream), testImage);
 
-        testArUcoMarkerType(navCamImage);
+        detectArUcoMarkers(testImage, "testImage");
 
         /* *********************************************************************** */
         /* Write your code to recognize type and number of items in the each area! */
@@ -115,19 +116,39 @@ public class YourService extends KiboRpcService {
         return Math.sqrt((double) ((coordY * coordY) + (coordX * coordX) + (coordZ * coordZ)));
     }
 
-    private void testArUcoMarkerType(Mat navCamImage) {
-        System.out.println("NAV IMAGE MARKER DETECTION");
+    private void detectArUcoMarkers(Mat inputImage, String imageNameBase) {
+        System.out.println("---------- ArUco MARKER DETECTION ----------\n");
 
-        Dictionary markerCorners = Aruco.getPredefinedDictionary(Aruco.DICT_5X5_250);
+        // Define the marker detection settings
+        Dictionary dictionary = Aruco.getPredefinedDictionary(Aruco.DICT_5X5_250);
+        DetectorParameters parameters = DetectorParameters.create();
 
-        List<Mat> markerIds = new ArrayList<Mat>();
-        Mat rejectedCandidates = new Mat();
-        Aruco.detectMarkers(navCamImage, markerCorners, markerIds, rejectedCandidates);
+        Mat markerIds = new Mat();
+        List<Mat> markerCorners = new ArrayList<Mat>();
+        List<Mat> rejectedCandidates = new ArrayList<Mat>();
 
-        api.saveMatImage(rejectedCandidates, "candidateImage");
+        // Store results in variables
+        Aruco.detectMarkers(inputImage, dictionary, markerCorners, markerIds, parameters, rejectedCandidates);
 
-        System.out.println(markerCorners);
+        System.out.println("----- MARKER ID INFO -----\n");
         System.out.println(markerIds);
-        System.out.println(rejectedCandidates.dump());
+        System.out.println(markerIds.getClass());
+        System.out.println(markerIds.dump());
+        System.out.println(markerIds.dump().getClass());
+
+        System.out.println("----- MARKER ID INFO -----\n");
+        Mat outputImage = inputImage.clone();
+        Aruco.drawDetectedMarkers(outputImage, markerCorners, markerIds);
+
+        api.saveMatImage(outputImage, imageNameBase + "Markers");
+
+        System.out.println("----- INDIVIDUAL MARKER IMAGES -----\n");
+        // NOTE: This may be trying to save a set of points and not an actual image
+        int imageCount = 0;
+        for (Mat imageMat : markerCorners) {
+            api.saveMatImage(imageMat, imageNameBase + Integer.toString(imageCount));
+        }
+
+        System.out.println("---------- END OF FUNCTION ----------\n");
     }
 }
