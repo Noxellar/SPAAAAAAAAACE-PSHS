@@ -5,16 +5,11 @@ import jp.jaxa.iss.kibo.rpc.api.KiboRpcService;
 import gov.nasa.arc.astrobee.types.Point;
 import gov.nasa.arc.astrobee.types.Quaternion;
 
-import org.opencv.core.CvType;
 import org.opencv.core.Mat;
-import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.aruco.Aruco;
 import org.opencv.aruco.DetectorParameters;
 import org.opencv.aruco.Dictionary;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,54 +41,28 @@ public class YourService extends KiboRpcService {
         api.saveMatImage(navCamImage, "navcam");
         api.saveMatImage(dockCamImage, "dockcam");
 
-        detectArUcoMarkers(navCamImage, "navCamImage");
-
-        // Perform test on known ArUco tage
-        int resourceId = getResources().getIdentifier("artag", "drawable", getPackageName());
-        InputStream stream = getResources().openRawResource(resourceId);
-
-        int nRead;
-        byte[] bytes;
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-
-        try {
-            bytes = new byte[stream.available()];
-
-            while ((nRead = stream.read(bytes, 0, bytes.length)) != -1) {
-                buffer.write(bytes, 0, nRead);
-            }
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        byte[] data = buffer.toByteArray();
-
-        Mat testImage = new Mat(1, data.length, CvType.CV_8UC1);
-        testImage.put(0, 0, data);
-
-        detectArUcoMarkers(Imgcodecs.imdecode(testImage, Imgcodecs.IMREAD_UNCHANGED), "testImage");
+        int areaId = detectArUcoMarkers(navCamImage, "navCamImage");
 
         /* *********************************************************************** */
         /* Write your code to recognize type and number of items in the each area! */
         /* *********************************************************************** */
 
         // When you recognize items, let’s set the type and number.
-        // TODO: RENABLE THIS LINE!!! api.setAreaInfo(1, "item_name", 1);
+        api.setAreaInfo(areaId, "item_name");
 
         /* **************************************************** */
         /* Let's move to the each area and recognize the items. */
         /* **************************************************** */
 
         // When you move to the front of the astronaut, report the rounding completion.
-        // TODO: RENABLE THIS LINE!!! api.reportRoundingCompletion();
+        api.reportRoundingCompletion();
 
         /* ********************************************************** */
         /* Write your code to recognize which item the astronaut has. */
         /* ********************************************************** */
 
         // Let's notify the astronaut when you recognize it.
-        // TODO: RENABLE THIS LINE!!! api.notifyRecognitionItem();
+        api.notifyRecognitionItem();
 
         /*
          * *****************************************************************************
@@ -132,7 +101,7 @@ public class YourService extends KiboRpcService {
         return Math.sqrt((double) ((coordY * coordY) + (coordX * coordX) + (coordZ * coordZ)));
     }
 
-    private void detectArUcoMarkers(Mat inputImage, String imageNameBase) {
+    private int detectArUcoMarkers(Mat inputImage, String imageNameBase) {
         System.out.println("---------- ArUco MARKER DETECTION ----------\n");
 
         // Define the marker detection settings
@@ -147,10 +116,7 @@ public class YourService extends KiboRpcService {
         Aruco.detectMarkers(inputImage, dictionary, markerCorners, markerIds, parameters, rejectedCandidates);
 
         System.out.println("----- MARKER ID INFO -----\n");
-        System.out.println(markerIds);
-        System.out.println(markerIds.getClass());
-        System.out.println(markerIds.dump());
-        System.out.println(markerIds.dump().getClass());
+        int id = Integer.valueOf(markerIds.dump());
 
         System.out.println("----- MARKER ID INFO -----\n");
         Mat outputImage = inputImage.clone();
@@ -159,5 +125,7 @@ public class YourService extends KiboRpcService {
         api.saveMatImage(outputImage, imageNameBase);
 
         System.out.println("---------- END OF FUNCTION ----------\n");
+
+        return id;
     }
 }
